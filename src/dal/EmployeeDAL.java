@@ -71,6 +71,7 @@ public class EmployeeDAL {
 					+ "EMPLOYEE_ID = " + emp.getEmployeeId();
 			int affectedRows = statement.executeUpdate(query);
 			connection.commit();
+			System.out.println("Zaktualizowano praceonika");
 			return affectedRows;
 		} catch(SQLException ex) {
 			this.exception = ex;
@@ -103,9 +104,9 @@ public class EmployeeDAL {
 			
 			String query = "DELETE FROM HR.EMPLOYEES "
 					+"WHERE EMPPLOYEE_ID = " +id;
-			statement.executeQuery(query);
+			statement.executeUpdate(query);
 		} catch (SQLException e) {
-			//this.exception = e;
+			this.exception = e;
 		}
 	}
 	

@@ -26,7 +26,7 @@ public class Test {
 		System.out.println(vector.size());
 		System.out.println(vector.get(2).getLastName());
 		
-		Employee employee = new Employee(512);
+		Employee employee = new Employee(194);
 		employee.setFirstName("Aadam");
 		employee.setLastName("Kowalski");
 		employee.setEmail("akowalski@gmail.com");
@@ -37,13 +37,13 @@ public class Test {
 		employee.setManagerId(121);
 		employee.setDepartmentId(45);
 		
-		//empDAL.insertEmployee(employee, connection);
+		//empDAL.insertEmployee(employee, connection); //niewystarczaj¹ce uprawnienia
 		
 		Employee employ = empDAL.getEmployeeById(194, connection);
 		System.out.println(employ.getFirstName() + " " + employ.getLastName());
 		
-		empDAL.updateEmployee(employee, connection);
-		
+		int affectedRows = empDAL.updateEmployee(employee, connection);
+		System.out.println(affectedRows);
 		
 		empDAL.delEmployee(194, connection);
 		
