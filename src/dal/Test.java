@@ -1,8 +1,11 @@
-package bd;
+package dal;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Vector;
+
+import bd.OraConn;
 
 public class Test {
 
@@ -13,11 +16,40 @@ public class Test {
 
 	public static void main(String[] args) throws SQLException {
 
-		DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
-		System.out.println("Sterownik Oracle JDBC zosta³ zarejestrowany");
-
+		new OraConn();
+		
 		connection = OraConn.open(connection, URL, USER, PASSWORD);
 
+		
+		//testowanie metod:
+		EmployeeDAL empDAL = new EmployeeDAL();
+		
+		Vector<Employee> vector = empDAL.getEmployees(connection);
+		System.out.println(vector.size());
+		System.out.println(vector.get(2).getLastName());
+		
+		Employee employee = new Employee(512);
+		employee.setFirstName("Aadam");
+		employee.setLastName("Kowalski");
+		employee.setEmail("akowalski@gmail.com");
+		employee.setPhoneNumber("123456789");
+		employee.setHireDate(LocalDate.now());
+		employee.setJobId("AB_CDE");
+		employee.setSalary(50000);
+		employee.setManagerId(121);
+		employee.setDepartmentId(45);
+		
+		//empDAL.insertEmployee(employee, connection);
+		
+		Employee empById = empDAL.getEmployeeById(194, connection);
+		//System.out.println(empById.getEmail());
+		
+		empDAL.updateEmployee(employee, connection);
+		
+		
+		empDAL.delEmployee(194, connection);
+		
+		
 		if (connection != null)
 			OraConn.close(connection);
 	}

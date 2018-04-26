@@ -5,6 +5,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class OraConn {
+	
+	public OraConn( ) {
+		try {
+			DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+			System.out.println("Sterownik Oracle JDBC zosta³ zarejestrowany");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	public static Connection open(Connection connection, String URL, String user, String password) {
 		try {
@@ -13,7 +23,6 @@ public class OraConn {
 		} catch (SQLException e2) {
 			System.out.println("B³¹d ³¹czenia z baz¹ danych");
 			System.out.println(e2.getMessage());
-			// e2.printStackTrace();
 		}
 		return connection;
 	}
@@ -24,7 +33,6 @@ public class OraConn {
 			System.out.println("Poprawnie zamkniêto po³¹czenie");
 		} catch (SQLException e3) {
 			System.out.println(e3.getMessage());
-			// e3.printStackTrace();
 		}
 	}
 
