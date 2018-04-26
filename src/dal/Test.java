@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Vector;
 
-import bd.OraConn;
-
 public class Test {
 
 	private static Connection connection = null;
@@ -41,8 +39,8 @@ public class Test {
 		
 		//empDAL.insertEmployee(employee, connection);
 		
-		Employee empById = empDAL.getEmployeeById(194, connection);
-		//System.out.println(empById.getEmail());
+		Employee employ = empDAL.getEmployeeById(194, connection);
+		System.out.println(employ.getFirstName() + " " + employ.getLastName());
 		
 		empDAL.updateEmployee(employee, connection);
 		

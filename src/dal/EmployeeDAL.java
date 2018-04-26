@@ -2,6 +2,7 @@ package dal;
 
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -35,7 +36,6 @@ public class EmployeeDAL {
 		return employees;
 	}
 	
-	
 	private Employee rs2Employee(ResultSet resultSet) {
 		Employee employee = null;
 		try {
@@ -48,8 +48,8 @@ public class EmployeeDAL {
 			employee.setHireDate(resultSet.getDate(col++).toLocalDate());
 			employee.setJobId(resultSet.getNString(col++));
 			employee.setSalary(resultSet.getInt(col++));
-			employee.setCommissionPct(resultSet.getDouble(col++));
-			//col++;
+			//employee.setCommissionPct(resultSet.getDouble(col++));
+			col++;
 			employee.setManagerId(resultSet.getInt(col++));
 			employee.setDepartmentId(resultSet.getInt(col++));
 		} catch (SQLException e) {
@@ -78,16 +78,17 @@ public class EmployeeDAL {
 		}
 	}
 	
-	public Employee getEmployeeById(int id,Connection connection) {
+	public Employee getEmployeeById(int id, Connection connection) {
 		
 		Employee employee = new Employee();
-		
-		try (Statement statement = connection.createStatement();) {
-			
-			String query = "SELECT * FROM HR.EMPLOYEES "
-					+"WHERE EMPLOYEE_ID = " + id;
-			ResultSet resultSet = statement.executeQuery(query);
-			employee = rs2Employee(resultSet);
+		try {
+			String query = "SELECT * FROM HR.EMPLOYEES WHERE EMPLOYEE_ID = ?";
+			PreparedStatement pStatement = connection.prepareStatement(query);
+			pStatement.setInt(1, id);
+			ResultSet resultSet = pStatement.executeQuery();
+			while(resultSet.next()) {
+				employee = rs2Employee(resultSet);
+			}
 			return employee;
 		} catch (SQLException e) {
 			//this.exception = e;
