@@ -17,36 +17,42 @@ public class Test {
 		new OraConn();
 		
 		connection = OraConn.open(connection, URL, USER, PASSWORD);
+		
+		EmployeeDAL empDAL = new EmployeeDAL();
 
 		
+		Employee newEmployee = new Employee(789);
+		newEmployee.setFirstName("Aadam");
+		newEmployee.setLastName("Kowalski");
+		newEmployee.setEmail("akowalski@gmail.com");
+		newEmployee.setPhoneNumber("123456789");
+		newEmployee.setHireDate(LocalDate.now());
+		newEmployee.setJobId("AB_CDE");
+		newEmployee.setSalary(50000);
+		newEmployee.setManagerId(121);
+		newEmployee.setDepartmentId(45);
+		
+		Employee updatedEmployee = new Employee();
+		updatedEmployee.setLastName("Nowak");
+		updatedEmployee.setEmail("nowak@123.pl");
+		updatedEmployee.setHireDate(LocalDate.now());
+		updatedEmployee.setEmployeeId(117);
+		
+
 		//testowanie metod:
-		EmployeeDAL empDAL = new EmployeeDAL();
-		
 		Vector<Employee> vector = empDAL.getEmployees(connection);
-		System.out.println(vector.size());
-		System.out.println(vector.get(2).getLastName());
+		System.out.println("Jest " +vector.size() +" wszystkich pracowników");
 		
-		Employee employee = new Employee(194);
-		employee.setFirstName("Aadam");
-		employee.setLastName("Kowalski");
-		employee.setEmail("akowalski@gmail.com");
-		employee.setPhoneNumber("123456789");
-		employee.setHireDate(LocalDate.now());
-		employee.setJobId("AB_CDE");
-		employee.setSalary(50000);
-		employee.setManagerId(121);
-		employee.setDepartmentId(45);
+		empDAL.insertEmployee(newEmployee, connection);
 		
-		//empDAL.insertEmployee(employee, connection); //niewystarczaj¹ce uprawnienia
+		Employee employee = empDAL.getEmployeeById(newEmployee.getEmployeeId(), connection);
+		System.out.println("Pracownik o id = " +newEmployee.getEmployeeId() + 
+				": " + employee.getFirstName() + " " + employee.getLastName());
 		
-		Employee employ = empDAL.getEmployeeById(194, connection);
-		System.out.println(employ.getFirstName() + " " + employ.getLastName());
+		int affectedRows = empDAL.updateEmployee(updatedEmployee, connection);
+		System.out.println("Zaktualizowano dane: " + affectedRows + " pracownika");
 		
-		int affectedRows = empDAL.updateEmployee(employee, connection);
-		System.out.println(affectedRows);
-		
-		empDAL.delEmployee(194, connection);
-		
+		empDAL.delEmployee(187, connection);
 		
 		if (connection != null)
 			OraConn.close(connection);
