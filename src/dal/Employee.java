@@ -2,23 +2,23 @@ package dal;
 
 import java.time.LocalDate;
 
-
 public class Employee {
-	
+
 	private int employeeId;
 	private String firstName;
 	private String lastName;
 	private String email;
 	private String phoneNumber;
-	private LocalDate hireDate; 
+	private LocalDate hireDate;
 	private String jobId;
 	private int salary;
 	private double commissionPct;
 	private int managerId;
 	private int departmentId;
-	
-	public Employee() { }
-	
+
+	public Employee() {
+	}
+
 	public Employee(int employeeId) {
 		this.employeeId = employeeId;
 	}
@@ -110,7 +110,5 @@ public class Employee {
 	public void setDepartmentId(int departmentId) {
 		this.departmentId = departmentId;
 	}
-	
-	
-	
+
 }

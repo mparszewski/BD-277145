@@ -1,6 +1,5 @@
 package dal;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,33 +8,34 @@ import java.sql.Statement;
 import java.time.format.DateTimeFormatter;
 import java.util.Vector;
 
-
 public class EmployeeDAL {
-	
+
 	private SQLException exception;
+
 	public SQLException getException() {
 		return exception;
 	}
 
-	public EmployeeDAL() {}
-	
+	public EmployeeDAL() {
+	}
+
 	public Vector<Employee> getEmployees(Connection connection) {
 		Vector<Employee> employees = new Vector<>();
-		
-		try(Statement statement = connection.createStatement();) {
-			
+
+		try (Statement statement = connection.createStatement();) {
+
 			String query = "SELECT * FROM EMPLOYEES";
 			ResultSet resultSet = statement.executeQuery(query);
-			while(resultSet.next()) {
+			while (resultSet.next()) {
 				employees.add(rs2Employee(resultSet));
 			}
-			
+
 		} catch (SQLException e) {
 			System.out.println(e);
 		}
 		return employees;
 	}
-	
+
 	private Employee rs2Employee(ResultSet resultSet) {
 		Employee employee = null;
 		try {
@@ -48,43 +48,40 @@ public class EmployeeDAL {
 			employee.setHireDate(resultSet.getDate(col++).toLocalDate());
 			employee.setJobId(resultSet.getNString(col++));
 			employee.setSalary(resultSet.getInt(col++));
-			//employee.setCommissionPct(resultSet.getDouble(col++));
+			// employee.setCommissionPct(resultSet.getDouble(col++));
 			col++;
 			employee.setManagerId(resultSet.getInt(col++));
 			employee.setDepartmentId(resultSet.getInt(col++));
 		} catch (SQLException e) {
-			//this.exception = e;
+			// this.exception = e;
 		}
 		return employee;
 	}
-	
+
 	public int updateEmployee(Employee emp, Connection connection) {
 		try (Statement statement = connection.createStatement();) {
-			if(employeeExists(emp.getEmployeeId(), connection)) {
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
-			String hireDate = dtf.format(emp.getHireDate());
-			
-			String query = "UPDATE EMPLOYEES SET "
-					+ "LAST_NAME = '" + emp.getLastName() + "', "
-					+ "EMAIL = '" + emp.getEmail() + "', "
-					+ "HIRE_DATE = to_date(" + hireDate + ", 'yyyyMMdd') "
-					+ "WHERE "
-					+ "EMPLOYEE_ID = " + emp.getEmployeeId();
-			int affectedRows = statement.executeUpdate(query);
-			connection.commit();
-			System.out.println("Zaktualizowano pracownika");
-			return affectedRows;
+			if (employeeExists(emp.getEmployeeId(), connection)) {
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+				String hireDate = dtf.format(emp.getHireDate());
+
+				String query = "UPDATE EMPLOYEES SET " + "LAST_NAME = '" + emp.getLastName() + "', " + "EMAIL = '"
+						+ emp.getEmail() + "', " + "HIRE_DATE = to_date(" + hireDate + ", 'yyyyMMdd') " + "WHERE "
+						+ "EMPLOYEE_ID = " + emp.getEmployeeId();
+				int affectedRows = statement.executeUpdate(query);
+				connection.commit();
+				System.out.println("Zaktualizowano pracownika");
+				return affectedRows;
 			} else {
 				System.out.println("Nie mo¿na zaktualizowaæ danych pracownika."
 						+ " Podany pracownik nie istnieje w bazie danych.");
 				return 0;
 			}
-		} catch(SQLException ex) {
+		} catch (SQLException ex) {
 			this.exception = ex;
 			return 0;
 		}
 	}
-	
+
 	public Employee getEmployeeById(int id, Connection connection) {
 
 		Employee employee = new Employee();
@@ -103,7 +100,7 @@ public class EmployeeDAL {
 			return null;
 		}
 	}
-	
+
 	public void delEmployee(int id, Connection connection) {
 
 		try (Statement statement = connection.createStatement();) {
@@ -112,13 +109,14 @@ public class EmployeeDAL {
 				statement.executeUpdate(query);
 				System.out.println("Poprawnie usuniêto pracownika o id = " + id);
 			} else {
-				System.out.println("Nie mo¿na usun¹æ pracownika. W bazie danych nie odnaleziono pracownika o podanym ID");
+				System.out
+						.println("Nie mo¿na usun¹æ pracownika. W bazie danych nie odnaleziono pracownika o podanym ID");
 			}
 		} catch (SQLException e) {
 			this.exception = e;
 		}
 	}
-	
+
 	public void insertEmployee(Employee employee, Connection connection) {
 		try (Statement statement = connection.createStatement();) {
 			if (!employeeExists(employee.getEmployeeId(), connection)) {
@@ -133,6 +131,7 @@ public class EmployeeDAL {
 						+ employee.getSalary() + ", " + employee.getCommissionPct() + ", " + employee.getManagerId()
 						+ ", " + employee.getDepartmentId() + ")";
 				statement.executeUpdate(query);
+				System.out.println("Poprwanie dodano pracownika o id: " + employee.getEmployeeId());
 				connection.commit();
 			} else {
 				System.out.println("Istnieje ju¿ pracownik o podanym ID");
@@ -141,16 +140,14 @@ public class EmployeeDAL {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public boolean employeeExists(int id, Connection connection) throws SQLException {
 
-		Employee employee;
 		String query = "SELECT * FROM EMPLOYEES WHERE EMPLOYEE_ID = ?";
 		PreparedStatement pStatement = connection.prepareStatement(query);
 		pStatement.setInt(1, id);
 		ResultSet resultSet = pStatement.executeQuery();
 		if (resultSet.next() == true) {
-			employee = rs2Employee(resultSet);
 			return true;
 		} else
 			return false;

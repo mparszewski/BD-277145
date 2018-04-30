@@ -5,8 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class OraConn {
-	
-	public OraConn( ) {
+
+	public OraConn() {
 		try {
 			DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
 			System.out.println("Sterownik Oracle JDBC zosta³ zarejestrowany");
@@ -14,7 +14,6 @@ public class OraConn {
 			e.printStackTrace();
 		}
 	}
-
 
 	public static Connection open(Connection connection, String URL, String user, String password) {
 		try {
